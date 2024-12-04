@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casino Black Jack</title>
     <link rel="stylesheet" href="blackJack.css">
 </head>
+
 <body>
     <div class="casino-container">
         <header class="casino-header">
             <h1>Casino Royale - Blackjack</h1>
         </header>
-        
+
         <main class="game-area">
             <div class="dealer-section">
                 <h2>Dealer</h2>
                 <div class="cards" id="dealer-cards">
-                    <!-- Dealer cards will appear here -->
+
                 </div>
                 <div class="score" id="dealer-score">Score: 0</div>
             </div>
@@ -24,23 +26,27 @@
             <div class="player-section">
                 <h2>Player</h2>
                 <div class="cards" id="player-cards">
-                    <!-- Player cards will appear here -->
+
                 </div>
                 <div class="score" id="player-score">Score: 0</div>
             </div>
+
+            <div id="game-message"></div>
 
             <div class="controls">
                 <button id="hit-button">Hit</button>
                 <button id="stand-button">Stand</button>
                 <button id="restart-button">Restart</button>
+                <button id="next-round-button" style="display: none;">Next Round</button>
             </div>
         </main>
 
         <footer class="casino-footer">
-            <p>&copy; 2024 Casino Royale. Play responsibly.</p>
+            <p>&copy; 2024 IESDoctorGambling. Balmis Presente, Gambling Presente.</p>
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script src="blackJack.js"></script>
 </body>
+
 </html>
