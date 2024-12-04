@@ -27,7 +27,8 @@ function calculateScore(card) {
     }
 }
 
-function adjustForAces(cards, score) {
+function adjustForAces(cards) {
+    let score = cards.reduce((total, card) => total + calculateScore(card), 0);
     let aceCount = cards.filter(card => card.value === 'ACE').length;
     while (score > 21 && aceCount > 0) {
         score -= 10;
@@ -45,9 +46,8 @@ function checkAutomaticWin(cards) {
 async function startGame() {
     dealerCards = [await drawCard(), await drawCard()];
     const playerCards = [await drawCard(), await drawCard()];
-    dealerScore += calculateScore(dealerCards[0]);
-    playerScore += calculateScore(playerCards[0]) + calculateScore(playerCards[1]);
-    playerScore = adjustForAces(playerCards, playerScore);
+    dealerScore = adjustForAces(dealerCards);
+    playerScore = adjustForAces(playerCards);
     document.getElementById('dealer-cards').innerHTML = `
         <img src="${dealerCards[0].image}" alt="${dealerCards[0].value} of ${dealerCards[0].suit}" class="draw-card">
         <img src="cartaBocabajo.jpg" alt="Face Down Card" class="draw-card">
@@ -66,13 +66,14 @@ async function startGame() {
 
 document.getElementById('hit-button').addEventListener('click', async () => {
     const playerCard = await drawCard();
-    playerScore += calculateScore(playerCard);
+    const playerCards = [...document.querySelectorAll('#player-cards img')].map(img => ({ value: img.alt.split(' ')[0] }));
+    playerCards.push(playerCard);
+    playerScore = adjustForAces(playerCards);
     const playerCardElement = document.createElement('img');
     playerCardElement.src = playerCard.image;
     playerCardElement.alt = `${playerCard.value} of ${playerCard.suit}`;
     playerCardElement.classList.add('draw-card');
     document.getElementById('player-cards').appendChild(playerCardElement);
-    playerScore = adjustForAces([...document.querySelectorAll('#player-cards img')].map(img => ({ value: img.alt.split(' ')[0] })), playerScore);
     document.getElementById('player-score').innerText = `Score: ${playerScore}`;
     if (playerScore > 21) {
         displayMessage('Player busts! Dealer wins.');
@@ -87,9 +88,10 @@ document.getElementById('stand-button').addEventListener('click', async () => {
     `;
     document.getElementById('dealer-score').innerText = `Score: ${dealerScore}`;
 
-    while (dealerScore < 17) {
+    while (dealerScore <= 16) {
         const dealerCard = await drawCard();
-        dealerScore += calculateScore(dealerCard);
+        dealerCards.push(dealerCard);
+        dealerScore = adjustForAces(dealerCards);
         const dealerCardElement = document.createElement('img');
         dealerCardElement.src = dealerCard.image;
         dealerCardElement.alt = `${dealerCard.value} of ${dealerCard.suit}`;
@@ -112,12 +114,18 @@ function displayMessage(message) {
     messageElement.textContent = message;
     messageElement.style.display = 'block';
     document.getElementById('next-round-button').style.display = 'block';
+    document.getElementById('hit-button').style.display = 'none';
+    document.getElementById('stand-button').style.display = 'none';
+    document.getElementById('restart-button').style.display = 'none';
 }
 
 function hideMessage() {
     const messageElement = document.getElementById('game-message');
     messageElement.style.display = 'none';
     document.getElementById('next-round-button').style.display = 'none';
+    document.getElementById('hit-button').style.display = 'inline-block';
+    document.getElementById('stand-button').style.display = 'inline-block';
+    document.getElementById('restart-button').style.display = 'inline-block';
 }
 
 function endGame() {
